@@ -1,0 +1,14 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+canvas {
+  display: block;
+}
+
+.success{
+  font-family: 'Noto Sans', sans-serif;
+  text-align: center;
+  font-size: 36px;
+  font-weight: 800;
+}
