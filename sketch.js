@@ -4,7 +4,7 @@ let poseNet;
 let poses = [];
 let sucess;
 let songOne, songTwo, songThree, songFour;
-let soundNames = ['CLAP', 'KICK', 'SNARE', 'TOM' ]
+let soundNames = ['TOM', 'SNARE', 'KICK', 'CLAP' ]
 
 function preload(){
 	songOne = loadSound('clap.mp3');
@@ -34,14 +34,19 @@ function setup() {
 }
 
 function modelReady() {
-  success = createP('Raise your right wrist to begin playing :)');
+  success = createP('Raise your right hand to begin playing :)');
   success.class('success');
 }
 
 function draw() {
 
       //Push the hidden video onto the canvas
+			push();
+			translate(video.width , 0);
+			scale(-1, 1);
       image(video, 0, 0, width, height);
+			pop();
+
 
       // Function to draw multiple rectangles onto the screen
       drawRect();
@@ -93,36 +98,41 @@ function nosePlayer()  {
       // For each pose detected, loop through all the keypoints
       let pose = poses[i].pose;
       // A keypoint is an object describing a body part (like rightArm or leftShoulder)
-      let keypoint = pose.keypoints[10];
+			let leftWrist = pose.keypoints[9];
+			let rightWrist = pose.keypoints[10];
+
       // Only draw an ellipse is the pose probability is bigger than 0.2
-      if (keypoint.score > 0.2) {
+      if (rightWrist.score > 0.2) {
         //Draw an ellipse at the nose
-        fill(255, 0, 0);
+        fill(255, 0, 0, 150);
         noStroke();
-        ellipse(keypoint.position.x, keypoint.position.y, 30, 30);
+        ellipse(width - rightWrist.position.x, rightWrist.position.y, 30, 30);
+				fill(0, 0, 255, 150);
+				ellipse(width - leftWrist.position.x, leftWrist.position.y, 30, 30);
 
         //The conditions for the different sounds to load.
-        if (keypoint.position.x < width/4  &&  !songOne.isPlaying()) {
+        if (rightWrist.position.x < width/4  &&  !songOne.isPlaying()) {
           songTwo.pause();
           songThree.pause();
           songFour.pause();
           songOne.play();
-        } else if(keypoint.position.x >= width/4  &&  keypoint.position.x < width/2 && !songTwo.isPlaying()) {
+        } else if(rightWrist.position.x >= width/4  &&  rightWrist.position.x < width/2 && !songTwo.isPlaying()) {
           songOne.pause();
           songTwo.pause();
           songThree.pause();
           songTwo.play();
-        } else if(keypoint.position.x >= width/2  &&  keypoint.position.x < 3*width/4 && !songThree.isPlaying() ){
+        } else if(rightWrist.position.x >= width/2  &&  rightWrist.position.x < 3*width/4 && !songThree.isPlaying() ){
           songOne.pause();
           songTwo.pause();
           songFour.pause();
           songThree.play();
-        } else if(keypoint.position.x >= 3*width/4  &&  keypoint.position.x < width && !songFour.isPlaying() ){
+        } else if(rightWrist.position.x >= 3*width/4  &&  rightWrist.position.x < width && !songFour.isPlaying() ){
           songOne.pause();
           songTwo.pause();
           songThree.pause();
           songFour.play();
         }
+
       }
   }
 
